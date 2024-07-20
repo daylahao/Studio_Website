@@ -8,6 +8,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //routers
 require("./routers/users.routers")(app);
+require("./routers/items.routers")(app);
+require("./routers/carts_products.routers")(app);
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
