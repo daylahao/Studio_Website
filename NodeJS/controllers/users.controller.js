@@ -1,13 +1,19 @@
 const Users = require("../models/users.model");
-const hashPassword = require("../common/hashPassword");
+const hashPassword = require("../common/hashPassword").hashPassword;
+const {Generate_Carts_Id,UrlAvatar} = require("../common/handleSQL")
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 module.exports={
+    test:(req,res)=>{
+        let a = __dirname;
+        res.send(a);
+    },
     getAllName:(req,res)=>{
         Users.getAllName((result) => {
             res.json(result);
         });
     },
+
     getById: (req,res)=>{
         const id = req.params.id;
         console.log(id);
@@ -41,7 +47,26 @@ module.exports={
         Users.login(user, (result) => {
             res.json(result);
         });
-    },
+    },  
+    register:(req,res)=>{
+        const form = JSON.parse(req.body);
+        const carts_id = Generate_Carts_Id();
+        console.log(UrlAvatar("default.png"));
+        console.log(carts_id);
+        const user = {
+            name : form.name,
+            phone: form.phone,
+            email: form.email,
+            token:"",
+            avt:UrlAvatar("default.png"),
+            password: hashPassword(form.password),
+            role: form.role,
+            cart_id: carts_id,
+        }
+        Users.insert(user, (result) => {
+            res.json(result);
+        });
+    }
     // generate:(req,res)=>{
     //     // Validate User Here
     // // Then generate JWT Token
@@ -59,20 +84,20 @@ module.exports={
     // const token = jwt.sign(data, jwtSecretKey);
     // res.send(token);
     // },
-    validate: permissions =>{
-        return (req,res,next)=>{
-        let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
-        let jwtSecretKey = process.env.JWT_SECRET_KEY;
-        const token = req.header(tokenHeaderKey);
-        // console.log(req);
-        const verified = jwt.verify(token, jwtSecretKey);
-        if (!User.getById(verified.UID)) {
-            return res.status(403).json({message: "Invalid Token"});
-        }
-        if(!permissions.includes(role)){
-            return res.status(403).json({message: "Invalid Token"});
-        }
-        next();
-        }
-        },
+    // validate: permissions =>{
+    //     return (req,res,next)=>{
+    //     let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
+    //     let jwtSecretKey = process.env.JWT_SECRET_KEY;
+    //     const token = req.header(tokenHeaderKey);
+    //     // console.log(req);
+    //     const verified = jwt.verify(token, jwtSecretKey);
+    //     if (!User.getById(verified.UID)) {
+    //         return res.status(403).json({message: "Invalid Token"});
+    //     }
+    //     if(!permissions.includes(role)){
+    //         return res.status(403).json({message: "Invalid Token"});
+    //     }
+    //     next();
+    //     }
+    //     },
 }

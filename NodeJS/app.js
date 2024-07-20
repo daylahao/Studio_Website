@@ -2,6 +2,8 @@ require('dotenv').config();
 var express = require('express');
 var app = express();
 var bodyParser =  require("body-parser");
+app.use(express.static('public'));
+app.use('/images', express.static('images'));
 //body-parser config;
 app.use(bodyParser.raw({ inflate: true, type: "application/json" }));
 app.use(bodyParser.json());

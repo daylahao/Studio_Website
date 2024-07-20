@@ -24,4 +24,17 @@ const auth =  permissions =>{
     }else {
         res.status(403).json({ message: 'Forbidden' });
     }}};
-module.exports ={hashPassword,auth};
+const validateToken = (req,callback) => {
+        let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
+        let jwtSecretKey = process.env.JWT_SECRET_KEY;
+        const token = req.header(tokenHeaderKey);
+        const verified = jwt.verify(token, jwtSecretKey);
+        // console.log(verified);
+        User.getById(verified.UID, (result) => {
+            if (result!={}) {
+               return callback(result);
+            }else {
+               return callback(null);
+            }
+    })};
+module.exports ={hashPassword,auth,validateToken};
