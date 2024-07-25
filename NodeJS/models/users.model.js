@@ -1,5 +1,6 @@
 const db = require("../common/connectDB");
 const jwt = require('jsonwebtoken');
+const { UrlAvatar } = require("../common/handleSQL");
 require('dotenv').config();
 const User = (user) => {
 
@@ -12,6 +13,10 @@ User.getAllName = async (callback) => {
             return callback(err);
         }
         const usersWithoutPassword = result.map(({ password,token, ...rest }) => rest);
+        const users = usersWithoutPassword.map(user => {
+            user.avt = UrlAvatar(user.avt);
+            return user;
+        });
         callback(usersWithoutPassword);
     });
 }
@@ -22,6 +27,7 @@ User.getById = async (id,callback) => {
             console.log(err);
             return callback(err);
         }
+        result[0].avt = UrlAvatar(result[0].avt);
         const { password,token,role, ...userWithoutPass } = result[0];
         // console.log(userWithoutPass);
         callback(userWithoutPass);
@@ -41,6 +47,7 @@ User.login = async (user, callback) => {
 
         let data = {...result[0]};
         const token = jwt.sign(data, jwtSecretKey);
+        result[0].avt = UrlAvatar(result[0].avt);
         const { password,role, ...userWithoutPass } = result[0];
         return callback({status:200,auth:token,user:userWithoutPass});
         }else{
@@ -86,20 +93,24 @@ FROM dual;`;
 }
 User.update = async (user, callback) => {
     const query = `UPDATE users SET ? WHERE UID = ?`;
-    db.query(query, [user, user.UID], (err, result) => {
+    db.query(query, [user.change, user.UID], (err, result) => {
         if (err) {
-            throw err;
+            return callback(false);
         }
-        callback(user);
+        if(result.affectedRows)
+        return callback(true);
+        else{
+            return callback(false);
+        }
     });
 }
 User.delete = async (id, callback) => {
     const query = `DELETE FROM users WHERE UID = ?`;
     db.query(query, id, (err, result) => {
         if (err) {
-            throw err;
+            callback(false);
         }
-        callback(result);
+        callback(true);
     });
 }
 module.exports = User;

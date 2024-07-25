@@ -6,10 +6,20 @@ const Generate_Carts_Id = ()=>{
     return ms;
 }
 const UrlAvatar=(name)=>{
-    const url = `http://${process.env.HOST}:${process.env.PORT}/images/avatars/${name}`;
+    const url = `${process.env.HTTP}${process.env.HOST}:${process.env.PORT}/images/avatars/${name}`;
+    return url; 
+}
+const UrlItems=(name)=>{
+    const url = `${process.env.HTTP}${process.env.HOST}:${process.env.PORT}/images/items/${name}`;
+    return url; 
+}
+const UrlGrallery=(name)=>{
+    const url = `${process.env.HTTP}${process.env.HOST}:${process.env.PORT}/images/gallery/${name}`;
     return url; 
 }
 module.exports ={
     Generate_Carts_Id,
-    UrlAvatar
+    UrlAvatar,
+    UrlItems,
+    UrlGrallery
     }

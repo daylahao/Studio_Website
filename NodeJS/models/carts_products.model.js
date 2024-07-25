@@ -49,18 +49,18 @@ Carts_Products.update = async (carts_products, callback) => {
     const query = `UPDATE carts_products SET ? WHERE cart_id = ? AND id_item = ?`;
     db.query(query, [carts_products,carts_products.cart_id,carts_products.id_item], (err, result) => {
         if (err) {
-            throw err;
+            return callback(false);
         }
-        callback(carts_products);
+        return callback(carts_products);
     });
 }
 Carts_Products.delete = async (carts_products, callback) => {
-    const query = `DELETE FROM carts_products WHERE cart_id = ?, id_item = ?`;
+    const query = `DELETE FROM carts_products WHERE cart_id = ? AND id_item = ?`;
     db.query(query, [carts_products.cart_id,carts_products.id_item], (err, result) => {
         if (err) {
-            throw err;
+            return callback(false);
         }
-        callback(result);
+        return callback(true);
     });
 }
 module.exports = Carts_Products;

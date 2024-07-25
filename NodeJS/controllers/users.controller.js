@@ -58,7 +58,7 @@ module.exports={
             phone: form.phone,
             email: form.email,
             token:"",
-            avt:UrlAvatar("default.png"),
+            avt:"default.png",
             password: hashPassword(form.password),
             role: form.role,
             cart_id: carts_id,
@@ -66,6 +66,39 @@ module.exports={
         Users.insert(user, (result) => {
             res.json(result);
         });
+    },
+    delete:(req,res)=>{
+        const body = JSON.parse(req.body);
+        Users.delete(body.UID,(result)=>{
+            if(result){
+                res.status(200).json(result);
+            }else{
+                res.status(401).json(result);
+            }
+        })
+    },
+    update:(req,res)=>{
+        const id = req.params.id;
+        // const body = req.body;
+        const {avt,...body} = req.body;
+        const avt_ = req.file;
+        if(avt){
+            body['avt']=avt;
+        }
+        else if(avt_){
+                body['avt']=avt_.filename;
+        }
+        const userupdate = {
+            UID:id,
+           change:body,
+        }
+        Users.update(userupdate,(result)=>{
+            if(result){
+                res.status(200).json(result);
+            }else{
+                res.status(401).json(result);
+            }
+        })
     }
     // generate:(req,res)=>{
     //     // Validate User Here

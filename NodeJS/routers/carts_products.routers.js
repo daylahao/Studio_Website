@@ -5,4 +5,6 @@ module.exports = function (router) {
     router.post("/cartsproducts/user", cartsProductscontroller.getById);
     // router.get("/cartsproducts", cartsProductscontroller.getAll);
     router.get("/cartsproducts/users/:id", cartsProductscontroller.getByUID);
+    router.delete("/cartsproducts",cartsProductscontroller.delete);
+    router.post("/cartsproducts/update",cartsProductscontroller.update);
   };

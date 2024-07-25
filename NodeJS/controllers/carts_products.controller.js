@@ -21,7 +21,6 @@ module.exports = {
             });
             }
         });
-       
     },
     getByUID: (req, res) => {
         const id = req.params.id;
@@ -53,27 +52,41 @@ module.exports = {
                 }
             });
         });
-       
     },
     delete:(req,res)=>{
-        const id = req.params.id;
-        carts_products.delete(id, (result) => {
-            res.json(result);
-        });
+        const body = JSON.parse(req.body);
+        console.log(body.id);
+        validateToken(req, (result) => {
+            const item = {
+                cart_id : result.cart_id,
+                id_item: body.id
+            }
+            carts_products.delete(item, (result) => {
+                res.json(result);
+            });
+         });
+
     },
     update:(req,res)=>{
-        const form = JSON.parse(req.body);
+        const body = JSON.parse(req.body);
+        validateToken(req, (result) => {
+        if(result==null){
+            res.status(401).json(false);
+        }else{
         const item = {
-            cart_id : form.cart_id,
-            UID : form.UID,
-            id_item : form.id_item ,
-            received:form.received,
-            end:form.end,
-            quantity: form.quantity,
-            price: form.price,
+            cart_id : result.cart_id,
+            UID : result.UID,
+            id_item : body.id_item,
+            received:body.received,
+            end:body.end,
+            quantity: body.quantity,
+            total: body.total,
         }
+        console.log(item);
         carts_products.update(item, (result) => {
-            res.json(result);
+            res.status(200).json(result);
         });
+    }
+    });
     }
 }
