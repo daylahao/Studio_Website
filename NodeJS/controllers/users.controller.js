@@ -1,6 +1,7 @@
 const Users = require("../models/users.model");
 const hashPassword = require("../common/hashPassword").hashPassword;
 const {Generate_Carts_Id,UrlAvatar} = require("../common/handleSQL")
+const validateToken = require("../common/hashPassword").validateToken;
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 module.exports={
@@ -13,7 +14,15 @@ module.exports={
             res.json(result);
         });
     },
-
+    getInformation:(req,res)=>{
+        validateToken(req,(result)=>{
+        // console.log(result.UID);
+        Users.getById(result.UID, (result) => {
+            res.json(result);
+        });
+        })
+        
+    },
     getById: (req,res)=>{
         const id = req.params.id;
         console.log(id);
@@ -40,12 +49,14 @@ module.exports={
         const form = JSON.parse(req.body);
         const user = {
             name: form.name,
-            email: form.email,
-            // password: hashPassword(form.password),
-            password: form.password,
+            password: hashPassword(form.password),
         }
         Users.login(user, (result) => {
-            res.json(result);
+            if(result.status==200)
+            res.status(200).json(result);
+            else{
+                res.status(401).json(result);
+            }
         });
     },  
     register:(req,res)=>{
@@ -58,6 +69,8 @@ module.exports={
             phone: form.phone,
             email: form.email,
             token:"",
+            gender: form.gender,
+            birthday: form.birthday,
             avt:"default.png",
             password: hashPassword(form.password),
             role: form.role,
@@ -93,6 +106,17 @@ module.exports={
            change:body,
         }
         Users.update(userupdate,(result)=>{
+            if(result){
+                res.status(200).json(result);
+            }else{
+                res.status(401).json(result);
+            }
+        })
+    },
+    EmailNotify:(req,res)=>{
+        const email = JSON.parse(req.body);
+        // console.log(email);
+        Users.Insert_EmailNotify(email,(result)=>{
             if(result){
                 res.status(200).json(result);
             }else{

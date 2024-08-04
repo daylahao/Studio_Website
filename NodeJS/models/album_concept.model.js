@@ -5,13 +5,24 @@ require('dotenv').config();
 const Album = (album) => {
 
 }
-Album.getAll= async (callback)=>{
-    const query = `SELECT album_concept.*, 
-       GROUP_CONCAT(gallery.id) AS gallery_ids,
-       GROUP_CONCAT(gallery.path_image) AS gallery_paths
+Album.getAll= async (req,callback)=>{
+    const limit = req.query.limit;
+    console.log(limit);
+    let query = `SELECT album_concept.*, 
+    GROUP_CONCAT(gallery.id) AS gallery_ids,
+    GROUP_CONCAT(gallery.path_image) AS gallery_paths
 FROM album_concept
 LEFT JOIN gallery ON album_concept.id = gallery.album_id
 GROUP BY album_concept.id;`;
+    if(limit){
+        query = `SELECT album_concept.*, 
+    GROUP_CONCAT(gallery.id) AS gallery_ids,
+    GROUP_CONCAT(gallery.path_image) AS gallery_paths
+FROM album_concept
+LEFT JOIN gallery ON album_concept.id = gallery.album_id
+GROUP BY album_concept.id LIMIT ${limit};`;
+    }
+
     db.query(query, (err, result) => {
         if (err) {
             console.log(err);
@@ -24,6 +35,7 @@ GROUP BY album_concept.id;`;
             album['imagepath'] = gallery_paths;
             return album
             });
+
         console.log(result)
         return callback(result);
     });
@@ -84,7 +96,7 @@ Album.insert  = async (item,imagelist,callback)=>{
 }
 Album.update = async (item,callback)=>{
     const query = `UPDATE album_concept SET ? WHERE id=?`
-    db.query(query,item,(err,result)=>{
+    db.query(query,item,item.id,(err,result)=>{
         if(err){
             return callback(false);
         }else{

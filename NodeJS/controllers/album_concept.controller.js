@@ -3,7 +3,7 @@ const { getById } = require("../models/items.model.js");
 require('dotenv').config();
 module.exports={
     getAll: (req,res)=>{
-        album.getAll((result)=>{
+        album.getAll(req,(result)=>{
             res.status(200).json(result);
         })
     },
@@ -16,6 +16,17 @@ module.exports={
                 res.status(200).json(result);
             }
         });
+    },
+    getLimited:(req,res)=>{ 
+        const limited = req.search;
+        console.log(limited);
+        // album.getLimited(limited,(result)=>{
+        //     if(result==false){
+        //         res.status(401).json(result);
+        //     }else{
+        //         res.status(200).json(result);
+        //     }
+        // });
     },
     insert:(req,res)=>{
         const images = req.files;

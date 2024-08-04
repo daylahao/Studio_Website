@@ -1,6 +1,8 @@
 const db = require("../common/connectDB");
 const jwt = require('jsonwebtoken');
 const { UrlAvatar } = require("../common/handleSQL");
+const moment = require('moment-timezone');
+
 require('dotenv').config();
 const User = (user) => {
 
@@ -27,31 +29,33 @@ User.getById = async (id,callback) => {
             console.log(err);
             return callback(err);
         }
+        // console.log(result);
         result[0].avt = UrlAvatar(result[0].avt);
-        const { password,token,role, ...userWithoutPass } = result[0];
+        result[0].birthday = moment(result[0].birthday).tz('Asia/Bangkok').format()
+        const { password,token, ...userWithoutPass } = result[0];
         // console.log(userWithoutPass);
         callback(userWithoutPass);
     });
 }
 User.login = async (user, callback) => {
-    const query = `SELECT * FROM users WHERE email = ? OR name LIKE CONCAT('%', CONVERT(?, BINARY)) AND password = ?`;
-    db.query(query, [user.email,user.name, user.password], (err, result) => {
+    const query = `SELECT * FROM users WHERE email = ? OR name = ? AND password = ?`;
+    db.query(query, [user.name,user.name, user.password], (err, result) => {
+        console.log(result);
         if (err) {
             console.log(err);
-            return callback(err);
+            return callback(false);
         }
-        else if(result.length> 0){
+        else if(result.length> 0 && result[0].password == user.password){
         // Validate User Here
         // Then generate JWT Token
         let jwtSecretKey = process.env.JWT_SECRET_KEY;
-
         let data = {...result[0]};
         const token = jwt.sign(data, jwtSecretKey);
         result[0].avt = UrlAvatar(result[0].avt);
-        const { password,role, ...userWithoutPass } = result[0];
+        const { password, ...userWithoutPass } = result[0];
         return callback({status:200,auth:token,user:userWithoutPass});
         }else{
-            return callback({status:401,auth:null,user:null});
+            return callback(false);
         }
     });
 }
@@ -111,6 +115,22 @@ User.delete = async (id, callback) => {
             callback(false);
         }
         callback(true);
+    });
+}
+User.Insert_EmailNotify = async (email, callback) => {
+    const query = `INSERT INTO email_notify SET ?`;
+    console.log(email);
+    db.query(query, email, (err, result) => {
+        console.log(result);
+        if (err) {
+            console.log(err);
+            return callback(false);
+        }
+        if(result.affectedRows){
+            return callback(true);
+        }else{
+            return callback(false);
+        }
     });
 }
 module.exports = User;

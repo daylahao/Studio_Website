@@ -10,6 +10,9 @@ const auth =  permissions =>{
     let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
     let jwtSecretKey = process.env.JWT_SECRET_KEY;
     const token = req.header(tokenHeaderKey);
+    if(token === null){
+        return res.status(403).json({message: "Invalid Token"});
+    }
     const verified = jwt.verify(token, jwtSecretKey);
     User.getById(verified.UID, (result) => {
         if(result.length < 1){
@@ -28,13 +31,17 @@ const validateToken = (req,callback) => {
         let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
         let jwtSecretKey = process.env.JWT_SECRET_KEY;
         const token = req.header(tokenHeaderKey);
-        const verified = jwt.verify(token, jwtSecretKey);
+        // console.log(token);
         // console.log(verified);
+        if(token === null){
+            return callback(null);
+        }else{
+        const verified = jwt.verify(token, jwtSecretKey);
         User.getById(verified.UID, (result) => {
             if (result!={}) {
                return callback(result);
             }else {
                return callback(null);
             }
-    })};
+    })}};
 module.exports ={hashPassword,auth,validateToken};
