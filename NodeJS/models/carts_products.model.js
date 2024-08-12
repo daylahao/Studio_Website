@@ -84,14 +84,22 @@ Carts_Products.delete = async (carts_products, callback) => {
     });
 }
 Carts_Products.complete = async (items, callback) => {
-    console.log(items);
     const query = `UPDATE users SET cart_id=? WHERE users.UID=?;`
+    const query2 = `UPDATE cartsforuid SET cart_id=? WHERE cartsforuid.UID=?;`
     console.log(query);
     db.query(query,[items.cart_id, items.UID], (err, result) => {
         if (err) {
             return callback(false);
         }
-        return callback(result);
+        else{
+            db.query(query2,[items.cart_id, items.UID], (err, result_temp) => {
+                if (err) {
+                    return callback(false);
+                }
+                console.log(result);
+                return callback(result);
+            });
+        }
     });
 }
 module.exports = Carts_Products;

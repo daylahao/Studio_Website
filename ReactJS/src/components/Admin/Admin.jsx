@@ -12,15 +12,17 @@ function Admin(props) {
   const [action,setAction]  = React.useState(searchQuery.get("action") || "products");
   const [cookies, setCookies] = useCookies(["user"]);
   useEffect(() => {
-    if(cookies['user'].role!="ADMIN"){
+    if(!cookies['auth']){
       navigate("/");
-    }else{
+    }
+    else{
+      if(cookies['user'].role!="ADMIN"){
+        navigate("/");
+      }
       if(action==="products"){
-        // navigate("/dashboard?action=products");
-
       }
     }
-  }, []);
+  });
   return (
     <div
       className="container-xxl p-0 h-100 flex-fill d-flex flex-column "

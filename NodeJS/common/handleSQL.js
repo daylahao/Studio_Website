@@ -2,7 +2,7 @@
 require('dotenv').config();
 const Generate_Carts_Id = ()=>{
     const ms = new Date().getTime();
-    console.log(ms);
+    console.log('Mã mới:'+ms);
     return ms;
 }
 const UrlAvatar=(name)=>{

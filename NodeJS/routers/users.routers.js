@@ -7,12 +7,13 @@ module.exports = function (router) {
     router.post("/users/emailnotify",usersControllers.EmailNotify);
     router.post("/users/login", usersControllers.login);
     router.post("/users/register", usersControllers.register);
+    router.post("/user/update",auth(['USER','ADMIN']),updateavt.single('avt'),usersControllers.UpdateSelf)
     // router.get("/users/test", usersControllers.test);
     router.get("/users/info", usersControllers.getInformation);
     router.get("/users/:id",auth(['ADMIN']), usersControllers.getById);
     router.get("/users",auth(['ADMIN']), usersControllers.getAllName);
     // router.post("/users/generate", usersControllers.generate);
     router.delete("/users",auth(['ADMIN']),usersControllers.delete);
-    router.post("/user/:id",updateavt.single('avt'),usersControllers.update);
+    router.post("/user/:id",auth(['ADMIN']),updateavt.single('avt'),usersControllers.update);
     // router.post("/users/validate", usersControllers.validate);
   };

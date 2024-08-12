@@ -180,6 +180,29 @@ input[type=number] {
     height: 240px;
   }
 }
+.imageContainerHoverChange{
+  position: relative;
+  overflow: hidden;
+}
+.imageContainerHoverChange::before{
+  content: "Thay đổi ảnh";
+  transition: all 0.25s ease-in-out;
+  position: absolute;
+  left: 0;bottom: 0;right: 0;
+  height: 0;
+  text-align: center;
+  margin: auto;
+  background-color: var(--blackblur);
+  color: var(--white);
+  z-index: 100;
+}
+.imageContainerHoverChange:hover{
+  cursor: pointer;
+}
+.imageContainerHoverChange:hover::before{
+  height: 50%;
+
+}
 .form-control:focus-visible{
   border: none;
   box-shadow: none !important;

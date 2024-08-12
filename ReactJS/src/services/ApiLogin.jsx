@@ -1,3 +1,4 @@
+import axios from "axios";
 import ApiBase from "./ApiBase";
 
 class UserApi extends ApiBase {
@@ -14,6 +15,9 @@ class UserApi extends ApiBase {
     }
     async SendEmail(data){
         return await this.httpPost(this.path+'/emailnotify',data);
+    }
+    async UpdateUser(formdata,data){
+        return await this.httpPostForm('user/update',formdata,data);
     }
 }
 

@@ -48,6 +48,7 @@ export const ContextUsers = createContext();
 function App() {
   const [user, setUser] = useState({ loggedIn: false, listimage:listImage });
   const [cookies, setCookie] = useCookies(['auth']);
+  const [toastList,setToastList] = useState([]);
   const getsession =()=>{
     if(cookies['auth']){
       setUser({ loggedIn: true });

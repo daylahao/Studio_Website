@@ -65,7 +65,7 @@ function Equipment(props) {
   const [isFetching, setIsFetching] = useState(true);
   let [listPage,setListPage] = useState([]);
   const handlepage = (total) => {
-    var page = Math.round(total/limitItem);
+    var page = Math.ceil(total/limitItem);
     var listpagetemp = [];
     for(let i = 1; i <=page; i++){
       listpagetemp.push(<Pagination.Item key={i} active={i === Number(pagequery)} linkStyle={{}} linkClassName="btn-outline-success" onClick={()=>{

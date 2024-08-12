@@ -41,7 +41,7 @@ module.exports = {
             }else{
             const item = {
                 cart_id : result.cart_id,
-                UID : result.UID,
+                // UID : result.UID,
                 id_item : form.id_item ,
                 received:moment(form.received).tz('Asia/Bangkok').format(),
                 end:moment(form.end).tz('Asia/Bangkok').format(),
@@ -89,6 +89,7 @@ module.exports = {
     });
     },
     complete:(req,res)=>{
+        console.log('thanh toan')
         validateToken(req, (result) => {
         if(result==null){
             res.status(401).json(false);
@@ -97,6 +98,7 @@ module.exports = {
             UID: result.UID,
             cart_id: Generate_Carts_Id(),
         }
+        console.log(item);
         carts_products.complete(item, (result) => {
             console.log(item.cart_id);
             res.status(200).json(item.cart_id);

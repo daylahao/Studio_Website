@@ -117,7 +117,8 @@ function Cart(props) {
                     </Col>
                 </Row>
                 <Col xs={12} variant={''} className="">
-                <Button variant="success p-2 w-100" onClick={HandleCompleteBill}>Thanh toán</Button>
+                {listCards.length > 0 ? <Button variant="success p-2 w-100" onClick={HandleCompleteBill}>Thanh toán</Button> : <Button variant="success p-2 w-100" disabled>Thanh toán</Button>}
+                {/* <Button variant="success p-2 w-100" onClick={HandleCompleteBill}>Thanh toán</Button> */}
                 </Col>
                 </Col>
             </Row>

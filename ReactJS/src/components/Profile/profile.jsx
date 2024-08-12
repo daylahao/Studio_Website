@@ -9,19 +9,17 @@ const OptionProfile = [{name:"Thông tin cá nhân",action:'products',status:tru
 function Profile(props) {
   const [isFetching, setIsFetching] = React.useState(true);
   const [searchQuery, setSearchQuery] = useSearchParams();
-const [cookies, setCookies] = useCookies(["user"]);
+const [cookies, setCookies] = useCookies();
   const navigate = useNavigate();
-const [action,setAction]  = React.useState(searchQuery.get("action") || "products");
+const [action,setAction]  = React.useState(searchQuery.get("action"));
   useEffect(() => {
-    if(isFetching){
-    console.log(action)
-    console.log(cookies['user']);
-    if(cookies['user'].role!="ADMIN"&&cookies['user'].role!="USER"){
+    if(!cookies['auth']){
       navigate("/");
     }
     else{
-      if(action==="products"){
-        navigate("/profile?action=products");
+    if(isFetching){
+      if(action==undefined||action===null){
+        setSearchQuery({action:'user'});  
       }
       if(action==="cart"){
         navigate("/cart");
@@ -32,6 +30,9 @@ const [action,setAction]  = React.useState(searchQuery.get("action") || "product
     setIsFetching(false);
   }
   });
+  if(isFetching){
+    return <div>Loading...</div>
+  }else
   return (
         <div
         className="container-xxl p-0 h-100 flex-fill d-flex flex-column "

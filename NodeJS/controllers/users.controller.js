@@ -3,6 +3,8 @@ const hashPassword = require("../common/hashPassword").hashPassword;
 const {Generate_Carts_Id,UrlAvatar} = require("../common/handleSQL")
 const validateToken = require("../common/hashPassword").validateToken;
 const jwt = require('jsonwebtoken');
+const moment = require('moment-timezone');
+
 require('dotenv').config();
 module.exports={
     test:(req,res)=>{
@@ -122,6 +124,34 @@ module.exports={
             }else{
                 res.status(401).json(result);
             }
+        })
+    },
+    UpdateSelf:(req,res)=>{
+        const {avt,...body} = req.body;
+        const avt_ = req.file; 
+        validateToken(req,(result)=>{
+            const UID  = result.UID;
+            if(req.file){
+                body['avt']= req.file.filename;
+            }
+            if(req.body['birthday'])
+            {
+                body['birthday'] = moment(body['birthday']).tz('Asia/Bangkok').format()
+            }
+            const userupdate = {
+                UID:UID,
+               change:body,
+            }
+            // console.log(userupdate);
+            Users.update(userupdate,(result)=>{
+                if(result){
+                    res.status(200).json(result);
+                }else{
+                    res.status(401).json(result);
+                }
+            })
+            // res.send(userupdate)
+            // console.log(userupdate);
         })
     }
     // generate:(req,res)=>{
